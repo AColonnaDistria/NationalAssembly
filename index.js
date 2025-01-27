@@ -159,7 +159,7 @@ function makePartyTableRowDeleteButton(id) {
     table_row_button.style.color = "white";
 
     table_row_button.style.fontWeight = "bold";
-
+    
     table_row_button.addEventListener("click", (event) => {
         partyList.splice(id, 1);
         updatePartyTable();

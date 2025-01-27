@@ -1,0 +1,32 @@
+#assembly {
+    width: 1200px;
+    height: 616px;
+}
+
+#box {
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    width: 100%;
+    height: fit-content;
+
+    display: flex;
+    flex-direction: row;
+}
+
+#right_box {
+    width: 100%;
+}
+
+#party_table {
+    position: relative;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+table {
+    border-collapse: collapse;
+}

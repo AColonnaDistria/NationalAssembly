@@ -1,7 +1,5 @@
-var URL = "http://localhost:5000";
-var URL_files = `${URL}/files`;
-
 var sieges = []
+var siegesSelector = []
 var data;
 
 var partyList = [{"name": "NFP", "numberOfSeats": 191, "color": "#ff0000"},
@@ -23,27 +21,39 @@ function updateSeats() {
     }
 }
 
-function getColorOfSeat(seatNumber) {
+function getPartyIdOfSeat(seatNumber) {
     let count = 0;
-    for (let party of partyList) {
-        count += party.numberOfSeats;
+    for (let partyId = 0; partyId < partyList.length; ++partyId) {
+        count += partyList[partyId].numberOfSeats;
 
         if (count > seatNumber) {
-            return party.color;
+            return partyId;
         }
     }
 
-    return colorOthers;
+    return -1;
 }
 
-async function makeSiege(gh, X, Y, color) {
+function getColorOfSeat(seatNumber) {
+    let partyId = getPartyIdOfSeat(seatNumber);
+
+    if (partyId == -1) {
+        return colorOthers;
+    }
+    else 
+    {
+        return partyList[partyId].color;
+    }
+}
+
+async function makeSiege(gh, id, X, Y, color) {
     let circle = document.createElement("div");
     let radius = 10.0;
 
     circle.style.position = "fixed";
     circle.style.borderRadius = `${radius}px`;
-    circle.style.top = `${X}px`;
-    circle.style.left = `${Y}px`;
+    circle.style.top = `${X - radius}px`;
+    circle.style.left = `${Y - radius}px`;
     circle.style.width = `${radius * 2.0}px`;
     circle.style.height = `${radius * 2.0}px`;
     circle.style.backgroundColor = color;
@@ -60,7 +70,7 @@ async function makeSieges(gh) {
     let Wout = 1200.0;
     let Hout = 616.0;
 
-    let response = await fetch(`${URL_files}/french-assembly-data.csv`);
+    let response = await fetch(`/french-assembly-data.csv`);
     data = await response.text();
 
     let lines = data.split('\n');
@@ -71,7 +81,7 @@ async function makeSieges(gh) {
         let X = parseFloat(fields[0]) / W * Wout;
         let Y = parseFloat(fields[1]) / H * Hout;
 
-        sieges.push(await makeSiege(gh, X, Y, getColorOfSeat(i - 1)));
+        sieges.push(await makeSiege(gh, i - 1, X, Y, getColorOfSeat(i - 1)));
     }
 }
 
